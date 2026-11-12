@@ -1,0 +1,133 @@
+meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101d35">
+<title>KoraSend | Move Money With Confidence</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;color:#17243b;font-family:Arial,sans-serif}
+header{background:#101d35;color:white;padding:25px 20px;border-radius:0 0 25px 25px}
+.brand{color:#e3bd69;font-size:25px;font-weight:bold}
+.tag{font-size:10px;letter-spacing:2px;color:#e3bd69}
+main{max-width:520px;margin:auto;padding:20px}
+.card{background:white;border-radius:17px;padding:20px;margin:15px 0;box-shadow:0 3px 14px #101d3510}
+.balance{background:#1d304f;color:white}
+.balance strong{font-size:30px;display:block;margin:12px 0}
+button{border:0;border-radius:12px;padding:14px;background:#b89143;color:white;font-weight:bold;width:100%;cursor:pointer}
+input,select{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;margin:8px 0 15px;font-size:16px}
+nav{display:flex;gap:7px;position:sticky;bottom:0;background:#101d35;padding:12px}
+nav button{background:#263b5d;color:white;padding:12px 5px}
+nav button.active{background:#b89143}
+.page{display:none}.page.active{display:block}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">✦ KoraSend</div>
+<div class="tag">MOVE MONEY WITH CONFIDENCE</div>
+<h2>Welcome to KoraSend</h2>
+<p>Your money, your world.</p>
+</header>
+<main>
+<section id="home" class="page active">
+<div class="card balance">
+<small style="color:#ddd">DEMO ACCOUNT BALANCE</small>
+<strong>GH₵ 4,850.00</strong>
+<small style="color:#e3bd69">Illustrative balance only — not real funds</small>
+</div>
+<div class="card">
+<h3>Quick actions</h3>
+<button onclick="showPage('send')">↗ Send money</button><br><br>
+<button onclick="showPage('activity')">◷ Transaction history</button>
+</div>
+<div class="card">
+<h3>Popular destinations</h3>
+<p>🇬🇭 Ghana · Domestic payments</p>
+<p>🇬🇧 United Kingdom · To Ghana</p>
+<p>🇺🇸 United States · To Ghana</p>
+</div>
+</section>
+<section id="send" class="page">
+<div class="card">
+<h2>Send money</h2>
+<label>Destination</label>
+<select id="country" onchange="calculate()">
+<option value="1">Ghana (GHS)</option>
+<option value="14.2">United Kingdom (GBP)</option>
+<option value="11.5">United States (USD)</option>
+</select>
+<label>Recipient's name</label>
+<input id="recipient" placeholder="Full name">
+<label>Recipient's phone</label>
+<input id="phone" type="tel" placeholder="Phone number">
+<label>Amount to send</label>
+<input id="amount" type="number" min="1" placeholder="Amount" oninput="calculate()">
+<p>Illustrative recipient amount:</p>
+<h2 id="received">GH₵ 0.00</h2>
+<small>Example rates only. Not live exchange rates.</small>
+<br><br>
+<button onclick="review()">Review sample transfer</button>
+<div id="review"></div>
+</div>
+</section>
+<section id="activity" class="page">
+<div class="card">
+<h2>Transaction history</h2>
+<p>● Ama Mensah — GH₵ 250.00</p>
+<small>Completed · Sample transaction</small>
+<hr>
+<p>◷ Kwame Boateng — GH₵ 120.00</p>
+<small>Pending · Sample transaction</small>
+<hr>
+<p>● Akosua Owusu — GH₵ 500.00</p>
+<small>Completed · Sample transaction</small>
+</div>
+</section>
+<section id="profile" class="page">
+<div class="card">
+<h2>Your profile</h2>
+<p>Phone number login — planned</p>
+<p>Automatic country selection — selected</p>
+<p>SMS verification — planned</p>
+<p>Identity verification — planned</p>
+<p>Customer support — planned</p>
+</div>
+</section>
+</main>
+<nav>
+<button class="active" onclick="showPage('home',this)">Home</button>
+<button onclick="showPage('send',this)">Send</button>
+<button onclick="showPage('activity',this)">Activity</button>
+<button onclick="showPage('profile',this)">Profile</button>
+</nav>
+<script>
+function showPage(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+if(btn)btn.classList.add('active');
+}
+function calculate(){
+let amount=Number(document.getElementById('amount').value)||0;
+let rate=Number(document.getElementById('country').value);
+document.getElementById('received').textContent='GH₵ '+(amount*rate).toFixed(2);
+}
+function review(){
+let name=document.getElementById('recipient').value;
+let phone=document.getElementById('phone').value;
+let amount=document.getElementById('amount').value;
+if(!name||!phone||!amount||Number(amount)<=0){
+alert('Please complete all fields.');
+return;
+}
+document.getElementById('review').innerHTML=
+'<p><b>Sample transfer review</b></p><p>Recipient: '+escapeText(name)+'</p><p>Phone: '+escapeText(phone)+'</p><p>Amount entered: '+escapeText(amount)+'</p><p><b>Demo only: no money will be sent.</b></p>';
+}
+function escapeText(value){
+return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+if('serviceWorker' in navigator){
+window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html
